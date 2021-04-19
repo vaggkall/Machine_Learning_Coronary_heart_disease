@@ -60,7 +60,7 @@ def ANN_REG(X,y,hidden_units_range,attributeNames,CV,K):
                                 # no final tranfer function, i.e. "linear output"
                                 )
             loss_fn = torch.nn.MSELoss() # notice how this is now a mean-squared-error loss
-            print('Training model of type:\n\n{}\n'.format(str(model())))
+            #print('Training model of type:\n\n{}\n'.format(str(model())))
             
             # Train the net on training data
             net, final_loss, learning_curve = train_neural_net(model,
@@ -70,7 +70,7 @@ def ANN_REG(X,y,hidden_units_range,attributeNames,CV,K):
                                                                n_replicates=n_replicates,
                                                                max_iter=max_iter)
             
-            print('\n\tBest loss: {}\n'.format(final_loss))
+            print('\n\tBest loss: {}\n'.format(final_loss) , " k2 =", k )
             
             # Determine estimated class labels for test set
             y_test_est = net(X_test)
@@ -80,17 +80,17 @@ def ANN_REG(X,y,hidden_units_range,attributeNames,CV,K):
             mse = (sum(se).type(torch.float)/len(y_test)).data.numpy() #mean
             errors.append(mse) # store error rate for current CV fold 
             nets.append(net) #store the coresponding net
-        print(errors)
+        #print(errors)
         opt_val_err= np.min(np.asarray(errors)) #finding the best error
-        print(opt_val_err)
+        #print(opt_val_err)
         outer_errors.append(opt_val_err)    # apending the best error to the list of best errors
         opt_hidden_unit=hidden_units_range[np.argmin(np.asarray(errors))] # finding the number of hidden units of the best error
-        print(opt_hidden_unit)
+        #print(opt_hidden_unit)
         best_hidden_units.append(opt_hidden_unit) # appending the best error to the list of best number of units
         
         net=nets[np.argmin(np.asarray(errors))] # finding the number of hidden units of the best error
         
-        print('Diagram of best neural net in ' + str(k) + ' fold:')
+        #print('Diagram of best neural net in ' + str(k) + ' fold:')
         weights = [net[i].weight.data.numpy().T for i in [0,2]]
         biases = [net[i].bias.data.numpy() for i in [0,2]]
         tf =  [str(net[i]) for i in [1,2]]
@@ -105,6 +105,9 @@ def ANN_REG(X,y,hidden_units_range,attributeNames,CV,K):
         best_nets.append(net)   # appenting best neta to the best net list
         
         
+        print('\n\ANN: {}\n', "opt_val_err = ", opt_val_err , "opt_hidden_unit = ",
+              opt_hidden_unit, " k2 =", k )
+        
     # Display the MSE across folds
     summaries_axes[1].bar(np.arange(1, K+1), np.squeeze(np.asarray(outer_errors)), color=color_list)
     summaries_axes[1].set_xlabel('Fold')
@@ -116,14 +119,14 @@ def ANN_REG(X,y,hidden_units_range,attributeNames,CV,K):
     
     #-------------------------------------RESULTS-------------------------------------------
         
-    print('Diagram of best neural net in last fold:')
+    #print('Diagram of best neural net in last fold:')
     weights = [net[i].weight.data.numpy().T for i in [0,2]]
     biases = [net[i].bias.data.numpy() for i in [0,2]]
     tf =  [str(net[i]) for i in [1,2]]
     draw_neural_net(weights, biases, tf, attribute_names=attributeNames)
     
     # Print the average classification error rate
-    print('\nEstimated generalization error, RMSE: {0}'.format(round(np.sqrt(np.mean(errors)), 4)))
+    #print('\nEstimated generalization error, RMSE: {0}'.format(round(np.sqrt(np.mean(errors)), 4)))
     
     # When dealing with regression outputs, a simple way of looking at the quality
     # of predictions visually is by plotting the estimated value as a function of 
@@ -144,11 +147,13 @@ def ANN_REG(X,y,hidden_units_range,attributeNames,CV,K):
     
     plt.show()
     
+    opt_val_err= np.min(np.asarray(outer_errors))
+    opt_hidden_unit=best_hidden_units[np.argmin(np.asarray(outer_errors))] 
+    '''
     print(outer_errors)
     print(best_hidden_units)
-    opt_val_err= np.min(np.asarray(outer_errors))
     print('ANN optional error '+ str(opt_val_err))
-    opt_hidden_unit=best_hidden_units[np.argmin(np.asarray(outer_errors))] 
+    '''
     print('ANN optional number of hidden units ' + str(opt_hidden_unit))
     
     return opt_val_err, opt_hidden_unit, net
