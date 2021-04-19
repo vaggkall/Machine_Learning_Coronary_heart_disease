@@ -13,7 +13,7 @@ from TransformedDataset import *
 def ANN_REG(X,y,hidden_units_range,attributeNames,CV,K):
     N, M = X.shape
     
-    y=y.astype(float)
+    #y=y.astype(float)
     y=y.reshape(y.shape[0],-1)
     
     X=X.astype(float)
@@ -22,7 +22,7 @@ def ANN_REG(X,y,hidden_units_range,attributeNames,CV,K):
     X = stats.zscore(X)
     
     # Parameters for neural network classifier
-    n_hidden_units = 2      # number of hidden units
+    # n_hidden_units = 2      # number of hidden units
     n_replicates = 1        # number of networks trained in each k-fold
     max_iter = 10000
     #hidden_units_range=range(1,8)
@@ -153,11 +153,13 @@ def ANN_REG(X,y,hidden_units_range,attributeNames,CV,K):
     
     return opt_val_err, opt_hidden_unit, net
 
-hidden_units_range=range(1,8)
-attributeNames=attributeNames.tolist()
+#hidden_units_range=range(1,3)
+#attributeNames=attributeNames_regression.tolist()+['ldl']
 
-opt_val_err ,opt_hidden_unit, net = ANN_REG(X,y,hidden_units_range,attributeNames,3)
+#CV = model_selection.KFold(3, shuffle=True)
 
-print('------------------------------REULTS----------------------------------')
-print('ANN optional error '+ str(opt_val_err))
-print('ANN optional number of hidden units ' + str(opt_hidden_unit))
+#opt_val_err ,opt_hidden_unit, net = ANN_REG(X_regression,y_regression,hidden_units_range,attributeNames,CV,3)
+
+#print('------------------------------REULTS----------------------------------')
+#print('ANN optional error '+ str(opt_val_err))
+#print('ANN optional number of hidden units ' + str(opt_hidden_unit))
